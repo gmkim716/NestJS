@@ -5,8 +5,8 @@ export interface Movie {
   title: string;
 }
 
-@Injectable() // 이 클래스를 IoC 컨테이너에서 관리하라는 의미
-export class AppService {
+@Injectable()
+export class MovieService {
   private movies: Movie[] = [
     { id: 1, title: '해리포터' },
     { id: 2, title: '어밴져스' },

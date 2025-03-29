@@ -1,6 +1,21 @@
 # 코드팩토리 강의노트
 
-## Ch.3 프로바이더 & 서비스
+## Ch.4 Module
+
+### @Module 기능
+
+- imports: 외부의 다른 모듈을 불러들일 때
+- exports: 외부로 모듈을 내보낼 때
+- controllers
+- providers
+
+### CLI을 이용한 생성
+
+- `nest g controller`: 특정 모듈에 관한 컨트롤러를 만들 수 있는 명령어
+- `nest g provider`: 특정 모듈에 관한 프로바이더를 만들 수 있는 명령어
+- \*`nest g resource`: 특정 모듈로 관리되는 자료를 간단하게 만들 수 있는 명령어
+
+## Ch.3 프로바이더 & 서비스 [250329]
 
 ### Controller와 Service를 구분하는 이유
 
