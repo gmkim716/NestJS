@@ -94,6 +94,7 @@
 - 하나의 함수와 하나의 클래스를 통해 만들 수 있다
 - 직접 유효성 검사 어노테이션을 만들어 사용
 - async: true를 설정하면 비동기로도 실행 가능
+- 유지보수를 위해서 커스텀 클래스를 만들어 사용하는 방식을 권장
 
   - 비밀번호 유효성 검사
 
@@ -132,6 +133,19 @@
     message: '기본으로 설정한 에러메시지를 무시하고 다른 메시지를 전달합니다',
   })
   ```
+
+### ValidationPipe
+
+- main.ts의 useGlobalPipes에 옵션 추가가 가능
+
+```typescript
+app.useGlobalPipes(
+  new ValidationPipe({
+    whitelist: true, // 기본값: false, true로 설정하면 정의하지 않은 프로퍼티 값을 제거
+    forbidNonWhitelisted: true, // 기본값 false, 있으면 안되는 프로퍼티가 존재할 때 에러 반환
+  }),
+);
+```
 
 ## Ch.5 디버거 사용법 [250329]
 
