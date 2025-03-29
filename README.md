@@ -33,6 +33,62 @@
 
   - 데코레이터에 message를 추가하면 검증 실패했을 때의 에러메시지를 확인할 수 있다
 
+### Class Validator 적용
+
+1. 설치: `pnpm install class-validator class-transformer`
+2. main.ts 등록: app.useGlobalPipe(new ValidationPipe())
+3. dto에 class validator 등록
+
+### 자주 사용하는 Class Validator 목록
+
+- 기본
+
+  - @IsDefined
+  - @IsOptional
+  - @Equals
+  - @NotEquals
+  - @IsEmpty
+  - @IsNotEmpty
+  - @IsIn
+  - @IsNotIn
+
+- 배열
+
+  - @IsIn
+  - @IsNotIn
+
+- 타입
+
+  - @IsBoolean()
+  - @IsString()
+  - @IsNumber()
+  - @IsInt()
+  - @IsArray()
+  - @IsEnum(MovieGenre)
+
+- 날짜
+
+  - @IsDateString()
+
+- 숫자
+
+  - @IsDivisibleBy(n)
+  - @IsPositive()
+  - @IsNegative()
+  - @Min(1)
+  - @Max(10)
+
+- 문자
+  - @Contains('hello')
+  - @NotContains('hello')
+  - @IsAlphanumeric()
+  - @IsCreditCard()
+  - @IsHexColor()
+  - @MaxLength(10)
+  - @MinLength(10)
+  - @IsUUID()
+  - @IsLatLong()
+
 ## Ch.5 디버거 사용법 [250329]
 
 ### 디버거가 필요한 이유
@@ -103,7 +159,6 @@
   - Nest.js 자체에서 IoC 컨테이너: 클래스를 인스턴스화해서 알아서 주입해준다
 
 - DI & IoC
-
   - Nest.js에는 IoC가 존재
   - IoC 안에는 선언해 놓은 클래스(모듈에 넣을)를 프로바이더에 집어 넣어두면 자동으로 클래스 인스턴스(B, C)를 만든다
   - 클래스 A에서 B를 사용하는 경우 인스턴스를 만들어 생성 & 주입을 자동으로 해준다
