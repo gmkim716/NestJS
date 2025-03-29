@@ -1,5 +1,52 @@
 # 코드팩토리 강의노트
 
+# Ch.7 환경변수
+
+## 환경변수 이론
+
+- 프로그램이 동작하는 환경에서의 설정값이나 비밀정보를 저장하고 사용하는 변수
+
+- 중요성
+
+  - [보안] API 키, 데이터베이스 비밀번호 등 민감한 정보를 코드에 직접 작성하지 않고 환경변수로 처리할 수 있다
+  - [유연성] 애플리케이션을 다양한 환경 (개발, 테스트, 운영)에서 쉽게 설정하고 실행할 수 있도록 도와준다
+  - [유지보수성] 설정 변경 시 코드수정 없이 환경변수 파일을 통해 간단히 업데이트할 수 있어 유지보수성을 노핀다
+  - [통일성] 동일한 애플리케이션을 여러 환경에서 일관된 방식으로 배포하고 운영할 수 있도록 한다
+
+- 환경변수 사용처
+
+  - 데이터베이스 설정
+  - PORT 번호
+  - API 키
+  - 환경 구분
+
+- 환경변수 사용: .env 파일
+
+  ```text
+  DB_HOST=localhost
+  DB_PORT=5432
+  EXTERNAL_API_KEY=your-api-key
+  PORT=3000
+  NODE_ENV=development
+  SMTP_HOST=stmp.mailtrap.io
+  LOG_LEVEL=debug
+  ```
+
+- 환경변수 모듈 등록: AppModule
+
+  ```typescript
+  import { ConfigModule } from '@nestjs/config';
+
+  @Module({
+    imports: [
+      ConfigModule.forRoot({
+        isGlobal: true,
+      }),
+    ],
+  })
+  export class AppModule {}
+  ```
+
 # Ch.6 유효성 검사 및 변환
 
 ## DTO(Data Transfer Obeject)
@@ -161,6 +208,20 @@ app.useGlobalPipes(
 
   - class validator: 변환하지 않고 검증만 진행
   - class transformer: 변환을 진행
+
+## Joi
+
+- 특성
+
+  - 스키마 기반 검증 라이브러리
+  - 타입세이프 하게 객체를 검증해서 데이터 무결성 유지
+  - 풍부한 에러메시지 커스터마이제이션 가능
+  - Extendsion을 통해 얼마든지 새로운 검증 로직 추가가 가능하다
+  - \*NestJS에서는 환경변수 검증할 때 많이 사용한다
+
+- 커스텀 에러메시지
+  - messages 메서드를 사용해 에러메시지 변경이 가능하다
+  - key에 에러코드를 입력하고, value에 에러 메시지를 입력한다
 
 # Ch.5 디버거 사용법 [250329]
 
