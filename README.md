@@ -1,6 +1,49 @@
 # 코드팩토리 강의노트
 
-## Ch.4 Module
+## Ch.6 유효성 검사 및 변환
+
+### DTO(Data Transfer Obeject)
+
+- body.x, body.y와 같이 사용 가능한 장점
+
+## Ch.5 디버거 사용법 [250329]
+
+### 디버거가 필요한 이유
+
+- 일반적으로는 console.log를 통해서 확인하는 과정을 거치게 됨, 그러나 너무 번거롭다
+
+### 디버거 세팅 방법(VSC 기준)
+
+- IDE 재생버튼 - create a launch.json file 버튼 클릭 - node.js 클릭: launch.json 파일 생성
+- lauch.json 파일에 입력
+  ```json
+  {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "type": "node",
+        "request": "launch",
+        "name": "Debug Nest Framework",
+        "runtimeExecutable": "pnpm", // 실행 방식
+        "runtimeArgs": [
+          "run",
+          "start:debug", // debug를 실행
+          "--",
+          "--inspect-brk"
+        ],
+        "autoAttachChildProcesses": true,
+        "restart": true,
+        "sourceMaps": true,
+        "stopOnEntry": false,
+        "console": "integratedTerminal"
+      }
+    ]
+  }
+  ```
+- 디버거 실행하고 중단점 설정
+- postman으로 관련된 동작 호출 시에 breakpoint의 변수 확인 가능
+
+## Ch.4 [250329]
 
 ### @Module 기능
 
