@@ -2,6 +2,10 @@
 
 ## Ch.3 프로바이더 & 서비스
 
+### Controller와 Service를 구분하는 이유
+
+- 한 곳(ex. Controller)에 코드를 몰아두면 요청에 대한 에러가 있을 때, 프로세스 상에서 문제인지, 서비스 로직 상에서 문제인지 확인하기 어려움
+
 ### Dependency Injetion & Inversion of Control (DI & IoC)
 
 - Dependency Injetion(DI)
