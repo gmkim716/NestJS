@@ -89,6 +89,50 @@
   - @IsUUID()
   - @IsLatLong()
 
+### Custom Validator
+
+- 하나의 함수와 하나의 클래스를 통해 만들 수 있다
+- 직접 유효성 검사 어노테이션을 만들어 사용
+- async: true를 설정하면 비동기로도 실행 가능
+
+  - 비밀번호 유효성 검사
+
+  ```typescript
+  @ValidatorConstraint()
+  class PasswordValidator implements ValidatorConstraintInterface {
+    validate(
+      value: any,
+      validationArguments?: ValidationArguments,
+    ): Promise<boolean> | boolean {
+      // 비밀번호 길이는 4-8자리여야 한다
+      return value.length > 4 && value.length < 8;
+    }
+    defaultMessage?(validationArguments?: ValidationArguments): string {
+      return '비밀번호의 길이는 4-8자리여야 합니다. ($value)';
+    }
+  }
+
+  function IsPasswordValid(validationOptions?: ValidationOptions) {
+    return function (object: object, propertyName: string) {
+      registerDecorator({
+        target: object.constructor,
+        propertyName,
+        options: validationOptions,
+        validator: PasswordValidator,
+      });
+    };
+  }
+
+
+  // @Validate(PasswordValidator, {
+  //   message: '기본으로 설정한 에러메시지를 무시하고 다른 메시지를 전달합니다',
+  // })
+
+  @IsPasswordValid({
+    message: '기본으로 설정한 에러메시지를 무시하고 다른 메시지를 전달합니다',
+  })
+  ```
+
 ## Ch.5 디버거 사용법 [250329]
 
 ### 디버거가 필요한 이유

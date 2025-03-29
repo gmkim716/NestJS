@@ -14,6 +14,7 @@ import {
   IsIn,
   IsInt,
   IsLatLong,
+  IsNegative,
   IsNotEmpty,
   IsNotIn,
   IsNumber,
@@ -25,13 +26,46 @@ import {
   Max,
   MaxLength,
   Min,
+  MinLength,
+  NotContains,
   NotEquals,
+  registerDecorator,
+  Validate,
+  ValidationArguments,
+  ValidationOptions,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
 } from 'class-validator';
 
 enum MovieGenre {
   HORROR = 'horror',
   COMEDY = 'comedy',
   ACTION = 'action',
+}
+
+@ValidatorConstraint()
+class PasswordValidator implements ValidatorConstraintInterface {
+  validate(
+    value: any,
+    validationArguments?: ValidationArguments,
+  ): Promise<boolean> | boolean {
+    // 비밀번호 길이는 4-8자리여야 한다
+    return value.length > 4 && value.length < 8;
+  }
+  defaultMessage?(validationArguments?: ValidationArguments): string {
+    return '비밀번호의 길이는 4-8자리여야 합니다. 입력된 비밀번호: $value';
+  }
+}
+
+function IsPasswordValid(validationOptions?: ValidationOptions) {
+  return function (object: object, propertyName: string) {
+    registerDecorator({
+      target: object.constructor,
+      propertyName,
+      options: validationOptions,
+      validator: PasswordValidator,
+    });
+  };
 }
 
 export class CreateMovieDto {
@@ -80,5 +114,12 @@ export class CreateMovieDto {
   // @MinLength(10) // 최소 길이 검증
   // @IsUUID() // UUID 형식(123e4567-e89b-12d3-a456-426614174000)인지 검증
   // @IsLatLong() // 위도와 경도 형식(123.456, 78.910)인지 검증
+
+  // @Validate(PasswordValidator, {
+  //   message: '기본으로 설정한 에러메시지를 무시하고 다른 메시지를 전달합니다',
+  // })
+  @IsPasswordValid({
+    message: '기본으로 설정한 에러메시지를 무시하고 다른 메시지를 전달합니다',
+  })
   test: string;
 }
