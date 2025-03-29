@@ -6,6 +6,33 @@
 
 - body.x, body.y와 같이 사용 가능한 장점
 
+### Class Validator
+
+- 특성
+
+  - 타입스크립트 decorator를 사용해 클래스를 검증
+  - 동기 / 비동기 방식 모두 지원
+  - \*class validator 자체적으로 제공하는 validator 사용 가능
+  - 커스텀 validator을 쉽게 만들 수 있다
+  - 커스텀 에러 메시지를 반환할 수 있다
+
+- 적용 예제
+
+  - @IsNotEmpty()
+  - @IsEmail()
+
+- 반환 에러 구조
+
+  - target: 검증한 객체
+  - property: 검증 실패한 프로퍼티
+  - value: 검증 실패한 값
+  - constraints: 검증 실패한 제약조건
+  - children: 프로퍼티의 모든 검증 실패 제약조건
+
+- 커스텀 에러 메시지
+
+  - 데코레이터에 message를 추가하면 검증 실패했을 때의 에러메시지를 확인할 수 있다
+
 ## Ch.5 디버거 사용법 [250329]
 
 ### 디버거가 필요한 이유

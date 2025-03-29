@@ -28,12 +28,12 @@ export class MovieController {
 
   @Post()
   postMovie(@Body() body: CreateMovieDto) {
-    return this.movieService.createMovie(body.title, body.genres);
+    return this.movieService.createMovie(body);
   }
 
   @Patch(':id')
   updateMovie(@Param('id') id: string, @Body() body: UpdateMovieDto) {
-    return this.movieService.updateMovie(+id, body.title, body.genres);
+    return this.movieService.updateMovie(+id, body);
   }
 
   @Delete(':id')
