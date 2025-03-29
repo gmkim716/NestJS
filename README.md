@@ -1,12 +1,12 @@
 # 코드팩토리 강의노트
 
-## Ch.6 유효성 검사 및 변환
+# Ch.6 유효성 검사 및 변환
 
-### DTO(Data Transfer Obeject)
+## DTO(Data Transfer Obeject)
 
 - body.x, body.y와 같이 사용 가능한 장점
 
-### Class Validator
+## Class Validator
 
 - 특성
 
@@ -147,13 +147,28 @@ app.useGlobalPipes(
 );
 ```
 
-## Ch.5 디버거 사용법 [250329]
+## Class Transformer
 
-### 디버거가 필요한 이유
+- 특성
+
+  - TS Decorator를 이용해 클래스를 변환
+  - 직렬화, 역직렬화, 인스턴스로의 변환을 담당
+  - 중첩된 객체에도 쉽게 적용 가능
+  - custom transformer로 어떤 변환이든 가능
+  - class vlaidator를 제작한 개발자가 시작한 프로젝트
+
+- class validator와 class transformer의 차이
+
+  - class validator: 변환하지 않고 검증만 진행
+  - class transformer: 변환을 진행
+
+# Ch.5 디버거 사용법 [250329]
+
+## 디버거가 필요한 이유
 
 - 일반적으로는 console.log를 통해서 확인하는 과정을 거치게 됨, 그러나 너무 번거롭다
 
-### 디버거 세팅 방법(VSC 기준)
+## 디버거 세팅 방법(VSC 기준)
 
 - IDE 재생버튼 - create a launch.json file 버튼 클릭 - node.js 클릭: launch.json 파일 생성
 - lauch.json 파일에 입력
@@ -184,28 +199,28 @@ app.useGlobalPipes(
 - 디버거 실행하고 중단점 설정
 - postman으로 관련된 동작 호출 시에 breakpoint의 변수 확인 가능
 
-## Ch.4 [250329]
+# Ch.4 [250329]
 
-### @Module 기능
+## @Module 기능
 
 - imports: 외부의 다른 모듈을 불러들일 때
 - exports: 외부로 모듈을 내보낼 때
 - controllers
 - providers
 
-### CLI을 이용한 생성
+## CLI을 이용한 생성
 
 - `nest g controller`: 특정 모듈에 관한 컨트롤러를 만들 수 있는 명령어
 - `nest g provider`: 특정 모듈에 관한 프로바이더를 만들 수 있는 명령어
 - \*`nest g resource`: 특정 모듈로 관리되는 자료를 간단하게 만들 수 있는 명령어
 
-## Ch.3 프로바이더 & 서비스 [250329]
+# Ch.3 프로바이더 & 서비스 [250329]
 
-### Controller와 Service를 구분하는 이유
+## Controller와 Service를 구분하는 이유
 
 - 한 곳(ex. Controller)에 코드를 몰아두면 요청에 대한 에러가 있을 때, 프로세스 상에서 문제인지, 서비스 로직 상에서 문제인지 확인하기 어려움
 
-### Dependency Injetion & Inversion of Control (DI & IoC)
+## Dependency Injetion & Inversion of Control (DI & IoC)
 
 - Dependency Injetion(DI)
 
@@ -221,7 +236,7 @@ app.useGlobalPipes(
   - IoC 안에는 선언해 놓은 클래스(모듈에 넣을)를 프로바이더에 집어 넣어두면 자동으로 클래스 인스턴스(B, C)를 만든다
   - 클래스 A에서 B를 사용하는 경우 인스턴스를 만들어 생성 & 주입을 자동으로 해준다
 
-## Ch.2 Controller [250329]
+# Ch.2 Controller [250329]
 
 - @Controller
 - @Get, @Post

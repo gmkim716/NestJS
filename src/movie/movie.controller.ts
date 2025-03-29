@@ -7,12 +7,15 @@ import {
   Param,
   Delete,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { MovieService } from './movie.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
+import { ClassSerializerInterceptor } from '@nestjs/common';
 
 @Controller('movie')
+@UseInterceptors(ClassSerializerInterceptor) // class transformer를 사용한다는 걸 명시해야 한다
 export class MovieController {
   constructor(private readonly movieService: MovieService) {}
 

@@ -122,4 +122,6 @@ export class CreateMovieDto {
     message: '기본으로 설정한 에러메시지를 무시하고 다른 메시지를 전달합니다',
   })
   test: string;
+
+  description: string;
 }
