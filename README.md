@@ -89,10 +89,66 @@
 
 ### DataSource 정의하고 환경변수 사용
 
+### Repoistory
+
 - 설치
 
   - `pnpm i @nestjs/config joi @nestjs/typeorm typeorm pg`
   - app.module.ts에 추가
+
+- Repository
+
+  - Entity에 대한 CRUD를 가능하게 해준다
+  - TypeORM에 정의된 메서드들을 사용해서 직접 SQL을 작성하지 않더라도 데이터 관리를 할 수 있다
+
+- 기본 명령어
+
+  - create()
+
+    - 객체를 생성
+    - save()와의 차이점: 데이터를 생성하는게 아니라 \*객체를 생성
+
+  - save()
+
+    - create()와 다르게 실제 DB에 저장이된다
+    - 이미 row가 존재한다면 업데이트한다(주의)
+    - 여러 객체를 한 번에 저장하는 것도 가능
+
+  - upsert()
+
+    - update 기능 + insert 기능
+    - 데이터 생성을 시도하고, 이미 존재하는 데이터라면 업데이트를 진행한다
+    - save와 다르게 하나의 transaction에서 작업이 실행 (ps. save는 id 조회 transaction + update 트랜잭션: 최대 2번의 트랜잭션을 발생시킨다)
+
+  - delete()
+
+    - row 삭제
+    - 주로 PK를 이용해서 삭제 진행
+    - findOptionsWhere 조건으로 여러 값을 삭제할 수 있다
+
+  - softDelete(), restore()
+
+    - softDelete: 비영구적으로 삭제
+    - restore()를 실행하면 softDelete 했던 row를 복구 할 수 있다
+
+  - update()
+
+    - 첫 번째 파라미터에 조건을 입력, 두 번째 파라미터에 변경 필드를 입력
+
+  - find(), findOne(), findAndCount()
+
+    - find(): 해당하는 모든 row 반환
+    - findOne(): 해당하는 첫번째 row 반환
+    - findAndCount(): 해당되는 row와 전체 갯수 반환
+
+  - exists()
+
+    - 특정 row가 존재하는지 boolean 값 반환
+
+  - preload()
+
+    - DB에 저장된 값을 PK를 기준으로 불러오고, 입력된 객체 값으로 덮어쓴다
+    - 덮어쓰는 과정에서 업데이트 요청이 전달되진 않는다 (변경사항을 반영하고 싶다면 save()를 해줘야 한다)
 
 # Ch.7 환경변수
 
