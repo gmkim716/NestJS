@@ -1,5 +1,99 @@
 # 코드팩토리 강의노트
 
+# Ch.8 SQL
+
+## SQL
+
+### SQL 이론
+
+- SQL이란
+
+  - Structured Query Langage의 약자
+  - RDBMS를 다루는 통합 언어
+  - INSERT, SELECT, UPDATE, DELETE를 통해 CRUD 작업이 가능하다
+  - DB 스키마를 변경할 수 있는 DDL을 포함한다
+  - BEGIN, COMMIT, ROLLBACK 키워드를 통한 ACID Trasnaction을 지원한다
+
+- 기본 쿼리
+
+  - SELECT: 데이터 조회
+  - WHERE: 데이터 필터링
+  - ORDER BY: 정렬 기준
+  - GROUP BY: 통계를 그룹으로 나눌 때 사용
+  - HAVING: 계산에 조건을 추가
+  - JOIN ON: 테이블은 연결
+  - INSERT INTO: 데이터 생성
+  - UPDATE SET: 데이터 업데이트
+  - DELETE: 데이터 삭제
+  - 서브쿼리
+
+### Mac에 PostgreSQL 세팅
+
+- 강의 기준 설치 내용
+
+  - 16 버전 사용
+  - password: postgres
+  - port: 5555 (일반적으로는 5432를 사용, 개인진행 시 5555가 안되서 5432로 설정 진행)
+  - locale: 기본값
+  - 실습 DB 설정: NestJS Netflix / 5432 / postgres
+
+- 사용법
+
+  - add new server
+  - 이름: NestJS Netflix
+
+## TypeORM
+
+- ORM
+
+  - Object Relation Model
+  - SQL문이 아닌 언어로 쿼리를 작성할 수 있도록 함
+
+- 특성
+
+  - OOP를 사용해서 DB 테이블을 클래스로 관리할 수 있게 해준다
+  - 다양한 DB를 지원한다
+  - Active Record, Data Mapper 패턴을 모두 지원한다
+  - 자체적으로 Migration 기능을 지원, 점진적인 DB 구조 변경과 버저닝을 모두 지원
+  - Eager & Lazy 로딩을 모두 지원해 데이터 호출에 완전한 컨트롤이 가능
+
+- DataSource
+
+  - 사용할 데이터베이스를 지정하고 정보를 제공하는 역할
+
+  ```typescript
+  const PostgresDataSource = new DataSource({
+    type: 'postgres', // 데이터베이스 종류
+    host: 'localhost', // 연결 호스트
+    port: 5432, // 연결 포트
+    username: 'test', //아이디
+    password: 'test', // 비밀번호
+    database: 'test', // 연결 DB
+    entities: [], // TS 엔티티 객체
+  });
+  ```
+
+- Entity
+
+- 주요 Column 옵션
+
+  - type / name / nullable / update / select
+  - default / unique / comment / enum / array
+
+- 특수 Column
+
+  - @CreateDateColumn: 자동으로 row 생성 시 날짜 시간 저장
+  - @UpdateDateColumn: 자동으로 row 최근 업데이트 날짜시간을 저장
+  - @DeleteDateColumn: 자동으로 row의 soft delete 날짜 시간을 저장
+  - @VersionColumn: 자동으로 row가 업데이트 될 때마다 1씩 증가
+
+### DataSource 정의하고 환경변수 사용
+
+- 설치
+
+  - `pnpm i @nestjs/config joi @nestjs/typeorm typeorm pg`
+  - app.module.ts에 추가
+
 # Ch.7 환경변수
 
 ## 환경변수 이론
@@ -20,32 +114,51 @@
   - API 키
   - 환경 구분
 
-- 환경변수 사용: .env 파일
+1. 환경변수 사용: .env 파일
 
-  ```text
-  DB_HOST=localhost
-  DB_PORT=5432
-  EXTERNAL_API_KEY=your-api-key
-  PORT=3000
-  NODE_ENV=development
-  SMTP_HOST=stmp.mailtrap.io
-  LOG_LEVEL=debug
-  ```
+```text
+DB_HOST=localhost
+DB_PORT=5432
+EXTERNAL_API_KEY=your-api-key
+PORT=3000
+NODE_ENV=development
+SMTP_HOST=stmp.mailtrap.io
+LOG_LEVEL=debug
+```
 
-- 환경변수 모듈 등록: AppModule
+2. 환경변수 모듈 등록: AppModule
 
-  ```typescript
-  import { ConfigModule } from '@nestjs/config';
+```typescript
+import { ConfigModule } from '@nestjs/config';
 
-  @Module({
-    imports: [
-      ConfigModule.forRoot({
-        isGlobal: true,
-      }),
-    ],
-  })
-  export class AppModule {}
-  ```
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+3. 환경 변수 사용
+
+```typescript
+import { ConfigService } from '@nestjs/config';
+
+@Injectable()
+export class AppService {
+  constructor(private configService: ConfigService) {}
+
+  getDatabaseHost(): string {
+    return this.configService.get<string>('DB_HOST');
+  }
+
+  getApiKey(): string {
+    return this.configService.get<string>('EXTERNAL_API_KEY');
+  }
+}
+```
 
 # Ch.6 유효성 검사 및 변환
 
