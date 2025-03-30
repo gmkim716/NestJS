@@ -73,7 +73,7 @@ export class CreateMovieDto {
   title: string;
 
   @IsNotEmpty()
-  genres: string[];
+  genre: string;
 
   // @IsDefined() // null이나 undefined가 아니어야 한다
   // @IsOptional() // 필수 필드가 아니라면 선택적으로 사용할 수 있도록 설정

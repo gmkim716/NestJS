@@ -13,12 +13,12 @@ export class MovieService {
     const movie1 = new Movie();
     movie1.id = 1;
     movie1.title = '해리포터';
-    movie1.genres = ['판타지', '모험'];
+    movie1.genre = '판타지';
 
     const movie2 = new Movie();
     movie2.id = 2;
     movie2.title = '어밴져스';
-    movie2.genres = ['액션', '모험'];
+    movie2.genre = '액션';
 
     this.movies.push(movie1, movie2);
   }
@@ -46,6 +46,9 @@ export class MovieService {
     const movie: Movie = {
       id: this.idCounter++,
       ...createMovieDto,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      version: 0,
     };
 
     this.movies.push(movie);
