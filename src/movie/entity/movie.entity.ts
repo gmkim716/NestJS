@@ -7,7 +7,7 @@ import {
   VersionColumn,
 } from 'typeorm';
 
-// entity embedding
+// Inheritance
 export class BaseEntity {
   @CreateDateColumn()
   createdAt: Date;
@@ -20,7 +20,7 @@ export class BaseEntity {
 }
 
 @Entity()
-export class Movie {
+export class Movie extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -29,7 +29,4 @@ export class Movie {
 
   @Column()
   genre: string;
-
-  @Column(() => BaseEntity)
-  base: BaseEntity;
 }
