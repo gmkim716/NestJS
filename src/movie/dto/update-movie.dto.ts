@@ -10,4 +10,8 @@ export class UpdateMovieDto {
   @IsOptional()
   @IsNotEmpty()
   genres?: string[];
+
+  @IsOptional()
+  @IsNotEmpty() // tip. ?을 입력해서 타입 안정성을 높이지만, 유효성 처리는 어노테이션을 통해서 진행
+  detail?: string;
 }
