@@ -2,9 +2,13 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
-import { Movie } from './movie/entity/movie.entity';
-import { MovieDetail } from './movie/entity/movie-detail.entity';
+import { Movie } from './movie/entities/movie.entity';
+import { MovieDetail } from './movie/entities/movie-detail.entity';
 import { MovieModule } from './movie/movie.module';
+import { DirectorModule } from './director/director.module';
+import { Director } from './director/entities/director.entity';
+import { GenreModule } from './genre/genre.module';
+import { Genre } from './genre/entities/genre.entity';
 
 // IoC 컨테이너에 관리될 클래스들을 모아두는 곳
 @Module({
@@ -36,12 +40,14 @@ import { MovieModule } from './movie/movie.module';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
-        entities: [Movie, MovieDetail], // 엔티티 등록
+        entities: [Movie, MovieDetail, Director, Genre], // 엔티티 등록
         synchronize: true, // 개발할 때만 true 적용, 자동으로 코드와 DB를 동기화 적용
       }),
       inject: [ConfigService],
     }),
     MovieModule,
+    DirectorModule,
+    GenreModule,
   ], // CLI로 생성한 모듈이 자동으로 추가됨
 })
 export class AppModule {}
