@@ -2,8 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import { Movie } from './entity/movie.entity';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { MovieDetail } from './entity/movie-detail.entity';
 
 @Injectable()
 export class MovieService {
@@ -13,7 +14,23 @@ export class MovieService {
   constructor(
     @InjectRepository(Movie)
     private readonly movieRepository: Repository<Movie>,
+    @InjectRepository(MovieDetail)
+    private readonly movieDetailRepository: Repository<MovieDetail>,
   ) {}
+
+  async createMovie(createMovieDto: CreateMovieDto) {
+    const movieDetail = await this.movieDetailRepository.save({
+      detail: createMovieDto.detail,
+    });
+
+    const movie = await this.movieRepository.save({
+      title: createMovieDto.title,
+      genre: createMovieDto.genre,
+      detail: movieDetail, // movieDetail 연결
+    });
+
+    return movie;
+  }
 
   async getManyMovies(title?: string) {
     if (!title) {
@@ -39,12 +56,6 @@ export class MovieService {
     if (!movie) {
       throw new NotFoundException('존재하지 않는 ID 값의 영화입니다');
     }
-
-    return movie;
-  }
-
-  async createMovie(createMovieDto: CreateMovieDto) {
-    const movie = await this.movieRepository.save(createMovieDto);
 
     return movie;
   }

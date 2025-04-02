@@ -260,3 +260,59 @@ export class Photo extends Content {
   size: string;
 }
 ```
+
+### Relationship
+
+- 4가지 관계
+
+  - @OneToOne
+  - @ManyToOne
+  - @OneToMany
+  - @ManyToMany
+
+- ManyToOne
+
+  - FK 레퍼런스를 들고 있는 입장이 Many에 해당
+
+  ```typescript
+  @Entity()
+  export class Photo {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column()
+    url: string;
+
+    @ManyToOne(
+      () => User, // 어떤 테이블과 조인할 것인지
+      (user) => user.photos, // 맵핑하는 컬럼
+    )
+    user: User;
+  }
+
+  @Entity()
+  export class User {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column()
+    name: string;
+
+    @OneToMany(
+      () => Photo, // 어떤 테이블과 조인할 것인지
+      (photo) => photo.user, // 매핑하는 컬럼
+    )
+    photos: Photo[];
+  }
+  ```
+
+- OneToOne
+
+  - OneToOne은 레퍼런스를 누가 들고 있든 상관 없다, 따라서 명시해줄 필요가 있다
+  - @JoinTable: 어떤 프로퍼티가 레퍼런스를 들고 있을지 정해줄 수 있다
+  - @JoinTable은 반드시 한 쪽에만 적용
+
+- ManyToMany
+
+  - @JoinTable을 한쪽에 적용해야 한다
+  - 중개 테이블이 생성될 때 @JoinTable이 적용된 테이블 이름이 먼저 위치한다
