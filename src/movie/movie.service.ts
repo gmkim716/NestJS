@@ -35,7 +35,9 @@ export class MovieService {
   async getManyMovies(title?: string) {
     if (!title) {
       return [
-        await this.movieRepository.find(),
+        await this.movieRepository.find({
+          relations: ['detail'],
+        }),
         await this.movieRepository.findAndCount(),
       ];
     }
@@ -51,6 +53,8 @@ export class MovieService {
       where: {
         id,
       },
+      // 리스트로 값을 넣을 수 있다. 가져오고 싶은 관계를 넣는다
+      relations: ['detail'],
     });
 
     if (!movie) {
