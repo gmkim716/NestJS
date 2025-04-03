@@ -316,3 +316,80 @@ export class Photo extends Content {
 
   - @JoinTable을 한쪽에 적용해야 한다
   - 중개 테이블이 생성될 때 @JoinTable이 적용된 테이블 이름이 먼저 위치한다
+
+## Query Builder
+
+### Query Builder
+
+- 일반적인 쿼리를 실행할 때는 repository를 사용하자
+- 동적으로 복잡한 쿼리를 만들어야 할 때는 query builder를 사용하자
+
+- 5가지 타입
+
+  1. SELECT
+
+  ```typescript
+  const movie = await dataSource
+    .createQueryBuilder()
+    .select('movie')
+    .from(Movie, 'movie')
+    .leftJoinAndSelect('movie.detail', 'detail')
+    .leftJoinAndSelect('movie.director', 'director')
+    .leftJoinAndSelect('movie.genres', 'genres');
+    .where("movie.id = :id", { id: 1})
+    .getOne();
+  ```
+
+  2. INSERT
+
+  ```typescript
+  await dataSource
+    .createQueryBuilder()
+    .insert()
+    .into(Movie)
+    .values([
+      {
+        title: 'New Movie',
+        genre: 'Action',
+        director: director,
+        genres: genres,
+      },
+    ])
+    .execute();
+  ```
+
+  3. UPDATE
+
+  ```typescript
+  await dataSource
+    .createQueryBuilder()
+    .update(Movie)
+    .set({ title: 'Updated Title', genre: 'Drama' })
+    .where('id = :id', { id: 1 })
+    .execute();
+  ```
+
+  4. DELTE
+
+  ```typescript
+  await dataSource
+    .createQueryBuilder()
+    .delete()
+    .from(Movie)
+    .where('id = :id', { id: 1 })
+    .execute();
+  ```
+
+  5. RELATIONS
+
+  ```typescript
+  const genres = await dataSource
+    .createQueryBuilder()
+    .relation(Movie, 'genres')
+    .of(1) // Movie id
+    .loadMany();
+  ```
+
+- save의 경우 querybuilder를 사용하게 되면 더 번거로울 수 있다(커밋에 기록된 코드 참고 하기)
+
+- 트랜잭션: 여러 개의 쿼리를 하나의 쿼리로 묶어서 실행, 단 한 개라도 실패하게 되면 롤백을 진행
