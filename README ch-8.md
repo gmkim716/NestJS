@@ -393,3 +393,151 @@ export class Photo extends Content {
 - save의 경우 querybuilder를 사용하게 되면 더 번거로울 수 있다(커밋에 기록된 코드 참고 하기)
 
 - 트랜잭션: 여러 개의 쿼리를 하나의 쿼리로 묶어서 실행, 단 한 개라도 실패하게 되면 롤백을 진행
+
+## Transaction
+
+### Transaction
+
+- 여러 오퍼레이션을 하나의 논리적인 작업으로 실행하는 기능
+
+- 트랜잭션의 세 가지 요소
+
+  1. Begin
+  2. Commit
+  3. Rollback
+
+- 트랜잭션의 문제점
+
+  1. Lost Reads: 두 트랜잭션이 같은 데이터를 업데이트해서 하나의 업데이트가 손실되는 경우
+
+     - 두 개의 트랜잭션이 같은 데이터를 읽고 업데이트 한다
+     - 나중에 진행된 트랜잭션이 먼저 진행된 트랜잭션의 결과를 덮어쓴다
+     - 먼저 진행된 트랜잭션의 작업은 유실된다
+     - Optimistic Lock 전략으로 해결 가능: 버전을 기록해서 버전이 올라간 경우 업데이트 하지 않음
+
+     ```sql -- 초기상태
+     -- Table: account
+     -- | id | balance |
+     -- |----|---------|
+     -- | 1  | 1000    |
+
+     -- Transaction 1
+     BEGIN TRANSACTION;
+     SELECT balance FROM account WHERE id = 1; -- 1000 반환
+     UPDATE account SET balance = balance - 100 WHERE id = 1; -- 900으로 변경
+
+     -- Transaction 2 (happens concurrently)
+     BEGIN TRANSACTION;
+     SELECT balance FROM account WHERE id = 1; -- Returns 1000
+     UPDATE account SET balance = balance - 200 WHERE id = 1; -- 800으로 변경
+
+     -- Transaction 1 진행
+     COMMIT; -- Balance = 900
+
+     -- Transaction 2 진행
+     COMMIT; -- Balance = 800
+
+     -- Final State
+     -- | id | balance |
+     -- |----|---------|
+     -- | 1  | 800     |
+     ```
+
+  2. Dirty Reads: 아직 커밋되지 않은 값을 다른 트랜잭션이 읽는 경우
+
+     - 아직 커밋되지 않은 다른 트랜잭션의 데이터를 읽었을 때 생기는 문제
+     - 변경한 데이터를 커밋하지 않고 롤백한 경우, 롤백 전에 읽은 데이터를 읽은 다른 트랜잭션은 잘못된 정보로 로직을 진행
+     - Read Comitted 트랜잭션으로 해결 가능: 키워드를 변경
+
+       ```sql
+       -- 초기상태
+       -- Table: account
+       -- | id | balance |
+       -- |----|---------|
+       -- | 1  | 1000    |
+
+
+       -- Transaction 1
+       BEGIN TRANSACTION;
+       UPDATE account SET balance = balance - 100 WHERE id = 1; -- balance = 900
+
+       -- Transaction 2
+       BEGIN TRANSACTION;
+       SELECT balance FROM account WHERE id = 1; -- 900 반환
+
+       -- Transaction 1 롤백
+       ROLLBACK; -- Balance 1000으로 되돌림
+
+       -- Transaction 2 진행
+       -- Transaction 2 에서 읽은 balance 값은 잘못된 값임.
+       ```
+
+  3. Non-repeatable Reads: 한 트랜잭션에서 데이터를 두 번 읽을 때 다른 결과가 나오는 경우
+
+     - 트랜잭션이 데이터를 읽은 상태에서 다른 트랜잭션이 데이터를 변경할 경우, 같은 데이터를 다시 읽었을 때 기존에 읽었떤 데이터가 재구현되지 않는 현상
+
+     - Repeatable Read 트랜잭션으로 해결 가능하다:
+
+     ```sql
+     -- 초기상태
+     -- Table: account
+     -- | id | balance |
+     -- |----|---------|
+     -- | 1  | 1000    |
+
+     -- Transaction 1
+     BEGIN TRANSACTION;
+     SELECT balance FROM account WHERE id = 1; -- 1000 반환
+
+     -- Transaction 2
+     BEGIN TRANSACTION;
+     UPDATE account SET balance = balance - 100 WHERE id = 1; -- balance = 900
+     COMMIT;
+
+     -- Transaction 1 continues
+     SELECT balance FROM account WHERE id = 1; -- 900 반환 (non-repeatable read)
+     COMMIT;
+     ```
+
+  4. Phantom Reads: 첫 Read 이후에 다른 트랜잭션에서 데이터를 추가한 경우
+
+     - 트랜잭션이 여러 row를 불러오는 필터링 쿼리를 진행 후, 다른 트랜잭션에서 쿼리의 조건에 맞는 새로운 데이터를 생성했을 때, 같은 쿼리가 다른 겨로가를 반환하는 것을 이야기 함
+
+     - serializable 트랜잭션으로 해결 가능
+
+     ```sql
+     -- 초기상태
+     -- Table: account
+     -- | id | balance |
+     -- |----|---------|
+     -- | 1  | 1000    |
+     -- | 2  | 1500    |
+
+     -- Transaction 1
+     BEGIN TRANSACTION;
+     SELECT * FROM account WHERE balance > 1000; -- account 2 반환
+
+     -- Transaction 2
+     BEGIN TRANSACTION;
+     INSERT INTO account (id, balance) VALUES (3, 1200);
+     COMMIT;
+
+     -- Transaction 1
+     SELECT * FROM account WHERE balance > 1000; -- account 2 and account 3 반환 (phantom read)
+     COMMIT;
+     ```
+
+- Transaction Level & Transaction Anomaly 자료 확인할 것
+
+  - part8. 데이터베이스 - ch 4. transaction - 01. transaction 이론 - 10:29
+
+- 사용법
+
+  - BEGIN과 COMMIT 사이에 명령어를 입력
+
+    ```sql
+    SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+    BEGIN TRANSACTION;
+    -- SQL 작업하기
+    COMMIT;
+    ```
