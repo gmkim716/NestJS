@@ -1,6 +1,91 @@
 # 코드팩토리 강의노트
 
-# Ch.8 데이터베이스
+# Ch. 9 Pipe
+
+## 파이프 이론
+
+- Nestjs의 4가지 미들웨어 중 하나
+
+### Pipe
+
+- Controller에 제공되는 argument들에 적용. @Body, @Param등 이미 사용하고 있는 입력받는 Annotation들이 포함
+
+  - 파이프는 argument 데이터를 가공한 후 Controller 메서드로 값을 넘겨준다
+
+    - 컨트롤러의 메서드가 실행되기 전에 파이프가 실행된다는 뜻!
+
+    - 파이프의 2가지 기능
+      - transformation: 데이터를 원하는 형태로 변형
+      - validation: 입력된 값이 정상적인 값인지 확인하고 아니면 에러를 전달
+
+- Global pipe
+
+  ```typescript
+  const app = await NestFactory.create(AppModule);
+  app.useGlobalPipe(new ValdiationPipe()); // useGlobalPipe: 프로젝트 전ㅇ역에서 적용되도록 설정
+  ```
+
+- Controller Pipe
+
+  - 컨트롤러에 적용하는 파이브
+
+  ```typescript
+  @Controller('movie')
+  @UsePipes(new ValidationPipe())
+  export class MovieController { ... }
+  ```
+
+- Route Pipe
+
+  ```typescript
+  @Controller('movie')
+  export class MovieController {
+    ...
+
+    @Patch(':id')
+    @UsePipes(new ValdiationPipe())
+    patchMovie(@Param('id') id: string, @Body() body: UpdateMovieDto) { ... }
+  }
+  ```
+
+- Route Parameter Pipe
+
+  ```typescript
+  @Controller('movie')
+  export class MovieController {
+    ...
+
+    @Patch(':id')
+    @UsePipes(new ValdiationPipe())
+    patchMovie(@Param('id', ParseIntPipe) id: number, @Body() body: UpdateMovieDto) { ... }
+  }
+  ```
+
+- 기본 Pipe 타입
+
+  - 값을 변환하고 검증
+    - ValidationPipe
+    - ParseIntPipe
+    - ParseFloatPipe
+    - ParseBoolPipe
+    - ParseArrayPipe
+    - ParseUUIDPipe
+    - ParseEnumPipe
+    - DefaultValuePipe
+    - ParseFilePipe: 사용x
+
+- 커스텀 pipe
+
+  - Injecable()로 선언한다
+
+  ```typescript
+  @Injectable()
+  export class ParseIntPipe implements PipeTransform<string, number> {
+    transform( ... ) { ... }
+  }
+  ```
+
+# Ch.8 데이터베이스 [250404]
 
 - README ch-8.md 참고
 
@@ -350,4 +435,3 @@ app.useGlobalPipes(
   cf. src/~.spec.ts : 단위 테스트, test/ : e2e 테스트
 
 - package.json
-

@@ -396,8 +396,6 @@ export class Photo extends Content {
 
 ## Transaction
 
-### Transaction
-
 - 여러 오퍼레이션을 하나의 논리적인 작업으로 실행하는 기능
 
 - 트랜잭션의 세 가지 요소
@@ -541,3 +539,53 @@ export class Photo extends Content {
     -- SQL 작업하기
     COMMIT;
     ```
+
+## Migration
+
+- 데이터 변경사항을 스크립트로 작성해서 반영한다. 통제된 상황에서 데이터베이스 스키마 변경 및 복구를 진행할 수 있다
+
+- Migration이 필요한 이유: 왜 sync 옵션으로는 부족할까?
+
+  - Controlled Changes: 원하는 상황에 원하는 형태로 마이그레이션을 자유롭게 실행할 수 있다
+  - Reversible: 진행한 마이그레이션을 쉽게 되돌릴 수 있다
+  - Versioning: 마이크레이션은 스키마 변경에 대한 히스토리를 담고 있어 디버깅에 매우 유용하다
+  - Consistency: 다양한 환경에서 데이터베이스 스키마가 같게 유지되도록 할 수 있다
+  - Complex Changes: 복잡한 데이터베이스의 변화를 직접 컨트롤할 수 있다
+
+- Migration Configuration: ormconfig.json
+
+  ```json
+    {
+      'type': ...
+      ...
+      "migrations": ["src/migtaion/**/*.ts"]  // 이 부분!
+      'cli': {
+        ...
+      }
+    }
+  ```
+
+- 주요 개념
+
+  - up: 마이그레이션을 진행할 때
+  - down: 마이그레이션을 롤백할 때
+
+- Migration CLI 커맨드
+
+  - 참고 : https: //typeorm.io/migrations
+
+  ```shell
+  # Migration 파일 생성
+  npx typeorm migration:generate  <MigrationName>
+
+  # Migration 실행하기
+  npx typeorm migration:run
+
+  # Migration 되돌리기
+  npx typeorm migration:revert
+  ```
+
+- 개발할 때는 sync true를 옵션을 가지고 자동으로 마이그레이션이 실행되도록 하는데, 프로덕션에서는 DB 정보가 소중하다(함부로 생성/삭제 하면 안됨) 따라서 항상 마이그레이션 파일을 만들고, 마이그레이션을 프로덕션 데이터베이스에서 진행하는 방식을 사용하곤 한다
+
+  - sync:true: 빠른 개발을 위해 DB 테이블이 쉽게 변경
+  - migration: 쿼리문이 남아있기 때문에 다시 실행이 가능
