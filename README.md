@@ -1,5 +1,19 @@
 # 코드팩토리 강의노트
 
+# Mapped Types
+
+- Mapped Types
+
+  - createDto/updateDto에 중복해서 만들어야 할 번거로움을 덜어낼 수 있다
+
+  - 5가지
+
+    - partial: 클래스 프로퍼티 정의를 모두 optional로 만든다
+    - pick: 특정 프로퍼티만 골라 사용할 수 있다 (omit의 반대)
+    - omit: 특정 프로퍼티만 생걀할 수 있다 (pick의 반대)
+    - intersection: 두 타입의 프로퍼티를 모두 모아서 사용할 수 있다
+    - composition: Mapped Tyeps를 다양하게 조합해서 중첩 적용 가능하다
+
 # Ch. 9 Pipe
 
 ## 파이프 이론
