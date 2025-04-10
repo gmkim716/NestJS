@@ -4,6 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  // global 파이프
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true, // 기본값: false, true로 설정하면 정의하지 않은 프로퍼티 값을 제거
